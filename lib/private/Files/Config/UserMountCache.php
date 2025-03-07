@@ -84,7 +84,8 @@ class UserMountCache implements IUserMountCache {
 		$removedMounts = [];
 
 		foreach ($newMounts as $mountKey => $newMount) {
-			if (!isset($cachedMounts[$mountKey])) {
+			$useMount = !is_array($mountProviderClasses) || in_array($newMount->getMountProvider(), $mountProviderClasses);
+			if (!isset($cachedMounts[$mountKey]) && $useMount) {
 				$addedMounts[] = $newMount;
 			}
 		}
