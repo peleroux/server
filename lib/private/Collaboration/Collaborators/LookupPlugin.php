@@ -68,8 +68,10 @@ class LookupPlugin implements ISearchPlugin {
 		$isLookupServerEnabled = $this->config->getAppValue('files_sharing', 'lookupServerEnabled', 'yes') === 'yes';
 		$hasInternetConnection = $this->config->getSystemValueBool('has_internet_connection', true);
 
-		// if case of Global Scale we always search the lookup server
-		if (!$isGlobalScaleEnabled && (!$isLookupServerEnabled || !$hasInternetConnection)) {
+		// If case of Global Scale we always search the lookup server
+		// TODO: Reconsider using the lookup server for non-global scale
+		// if (!$isGlobalScaleEnabled && (!$isLookupServerEnabled || !$hasInternetConnection || $disableLookupServer)) {
+		if (!$isGlobalScaleEnabled) {
 			return false;
 		}
 

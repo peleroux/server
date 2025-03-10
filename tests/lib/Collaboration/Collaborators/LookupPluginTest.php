@@ -217,7 +217,7 @@ class LookupPluginTest extends TestCase {
 			->method('getAppValue')
 			->with('files_sharing', 'lookupServerEnabled', 'no')
 			->willReturn($LookupEnabled ? 'yes' : 'no');
-		if ($GSEnabled || $LookupEnabled) {
+		if ($GSEnabled) {
 			$searchResult->expects($this->once())
 				->method('addResultSet')
 				->with($type, $searchParams['expectedResult'], []);
@@ -270,12 +270,13 @@ class LookupPluginTest extends TestCase {
 		$this->assertFalse($moreResults);
 	}
 
-
-	public function testSearchLookupServerDisabled() {
-		$this->config->expects($this->once())
-			->method('getAppValue')
-			->with('files_sharing', 'lookupServerEnabled', 'yes')
-			->willReturn('no');
+	public function testSearchGSDisabled(): void {
+		$this->config->expects($this->atLeastOnce())
+			->method('getSystemValueBool')
+			->willReturnMap([
+				['has_internet_connection', true, true],
+				['gs.enabled', false, false],
+			]);
 
 		/** @var ISearchResult|MockObject $searchResult */
 		$searchResult = $this->createMock(ISearchResult::class);
@@ -394,7 +395,6 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[0],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
 							'shareWith' => $fedIDs[0]
 						],
 						'extra' => ['federationId' => $fedIDs[0]],
@@ -403,7 +403,6 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[1],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
 							'shareWith' => $fedIDs[1]
 						],
 						'extra' => ['federationId' => $fedIDs[1]],
@@ -412,7 +411,6 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[2],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
 							'shareWith' => $fedIDs[2]
 						],
 						'extra' => ['federationId' => $fedIDs[2]],
@@ -487,7 +485,7 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[0],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
+							'globalScale' => true,
 							'shareWith' => $fedIDs[0]
 						],
 						'extra' => ['federationId' => $fedIDs[0]],
@@ -496,7 +494,7 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[1],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
+							'globalScale' => true,
 							'shareWith' => $fedIDs[1]
 						],
 						'extra' => ['federationId' => $fedIDs[1]],
@@ -505,7 +503,7 @@ class LookupPluginTest extends TestCase {
 						'label' => $fedIDs[2],
 						'value' => [
 							'shareType' => IShare::TYPE_REMOTE,
-							'globalScale' => false,
+							'globalScale' => true,
 							'shareWith' => $fedIDs[2]
 						],
 						'extra' => ['federationId' => $fedIDs[2]],
